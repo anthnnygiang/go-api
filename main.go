@@ -5,7 +5,6 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
@@ -17,7 +16,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", indexHandler)
 
-	PORT := os.Getenv("PORT")
+	const PORT = "4000"
 	fmt.Printf("server @ localhost:%s\n", PORT)
 	err = http.ListenAndServe(":"+PORT, mux)
 	log.Fatal(err)
@@ -37,16 +36,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		// Handle the GET request...
 		fmt.Fprintf(w, "handling GET request\n")
 
-	case http.MethodPost:
-		// Handle the POST request...
-		fmt.Fprintf(w, "handling POST request\n")
-
 	case http.MethodOptions:
-		w.Header().Set("Allow", "GET, POST, OPTIONS")
+		w.Header().Set("Allow", "GET, OPTIONS")
 		w.WriteHeader(http.StatusNoContent)
 
 	default:
-		w.Header().Set("Allow", "GET, POST, OPTIONS")
+		w.Header().Set("Allow", "GET, OPTIONS")
 		http.Error(w, "error: method not allowed", http.StatusMethodNotAllowed)
 	}
 }

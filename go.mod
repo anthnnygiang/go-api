@@ -2,4 +2,7 @@ module 9z/go-api-template
 
 go 1.20
 
-require github.com/joho/godotenv v1.5.1 // indirect
+require (
+	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/rs/xid v1.5.0 // indirect
+)
