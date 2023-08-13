@@ -19,6 +19,6 @@ func (s Session) CreateToken(token string) string {
 
 type SessionService interface {
 	CreateSession(UserID xid.ID) (*Session, string, error)
-	VerifySession(token string) (*User, error)
+	VerifySession(token string) (xid.ID, error)
 	DeleteSession(token string) (*Session, error)
 }

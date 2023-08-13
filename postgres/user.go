@@ -10,11 +10,11 @@ type UserService struct {
 }
 
 func (us *UserService) CreateUser(user *app.User) (*app.User, error) {
-	newUser := app.User{
+	u := app.User{
 		Email:        user.Email,
 		PasswordHash: user.PasswordHash,
 	}
 	//	Insert into db
 
-	return &newUser, nil
+	return &u, nil
 }
