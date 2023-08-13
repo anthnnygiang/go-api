@@ -11,6 +11,7 @@ import (
 
 func main() {
 	//load environment variables
+	//TODO: use setenv
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -28,10 +29,9 @@ func main() {
 		DB: db,
 	}
 
-	/**
-	Initialize server
-	It is not important how services are implemented, as long as they
-	implement all the methods specified. This allows for different
+	/** Initialize server
+	It is not important how services are implemented, as long
+	as they implement all methods. This allows for different
 	service implementations to be easily interchangeable.
 	*/
 	server := &web.Server{
