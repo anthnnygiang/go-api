@@ -1,6 +1,8 @@
 package main
 
 import (
+	"9z/go-api-template/postgres"
+	"9z/go-api-template/web"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -8,40 +10,40 @@ import (
 )
 
 func main() {
+	//load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	//Initialize DB
+	db, err := postgres.CreateDB()
+	if err != nil {
+		log.Fatal("Error DB")
+	}
+	defer db.Close()
+
+	//Initialize services
+	userService := &postgres.UserService{
+		DB: db,
+	}
+
+	/**
+	Initialize server
+	It is not important how services are implemented, as long as they
+	implement all the methods specified. This allows for different
+	service implementations to be easily interchangeable.
+	*/
+	server := &web.Server{
+		UserService: userService,
+	}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", indexHandler)
+	mux.HandleFunc("/", server.HandleIndex)
+	mux.HandleFunc("/user", server.HandleUser)
 
 	const PORT = "4000"
 	fmt.Printf("server @ localhost:%s\n", PORT)
 	err = http.ListenAndServe(":"+PORT, mux)
 	log.Fatal(err)
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Printf("%s %s\n", r.Method, r.URL.Path)
-
-	// Common code for all requests...
-
-	switch r.Method {
-	case http.MethodGet:
-		// Handle the GET request...
-		fmt.Fprintf(w, "handling GET request\n")
-
-	case http.MethodOptions:
-		w.Header().Set("Allow", "GET, OPTIONS")
-		w.WriteHeader(http.StatusNoContent)
-
-	default:
-		w.Header().Set("Allow", "GET, OPTIONS")
-		http.Error(w, "error: method not allowed", http.StatusMethodNotAllowed)
-	}
 }
