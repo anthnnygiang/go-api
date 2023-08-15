@@ -1,9 +1,7 @@
 package app
 
-import "github.com/rs/xid"
-
 type User struct {
-	ID           xid.ID
+	ID           string
 	Email        string
 	PasswordHash string
 }

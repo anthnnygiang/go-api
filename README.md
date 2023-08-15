@@ -9,3 +9,7 @@ implementations.
 
 * pgx
 * xid
+
+## Notes
+
+* New IDs are generated with `xid.New().String()`.

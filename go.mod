@@ -1,6 +1,6 @@
 module 9z/go-api-template
 
-go 1.20
+go 1.21
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
