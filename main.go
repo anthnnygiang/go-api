@@ -17,8 +17,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	//Initialize DB
-	db, err := postgres.CreateDB()
+	//Open a connection to the database
+	db, err := postgres.Open()
 	if err != nil {
 		log.Fatal("Error DB")
 	}
@@ -28,6 +28,9 @@ func main() {
 	userService := &postgres.UserService{
 		DB: db,
 	}
+	sessionService := &postgres.SessionService{
+		DB: db,
+	}
 
 	/** Initialize server
 	It is not important how services are implemented, as long
@@ -35,7 +38,8 @@ func main() {
 	service implementations to be easily interchangeable.
 	*/
 	server := &web.Server{
-		UserService: userService,
+		UserService:    userService,
+		SessionService: sessionService,
 	}
 
 	mux := http.NewServeMux()

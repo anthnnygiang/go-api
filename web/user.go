@@ -27,8 +27,12 @@ func (s *Server) HandleUser(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		fmt.Fprintf(w, "%v", newUser)
-		//	Write response
+		//Create a session
+		newSession, rawToken, err := s.SessionService.CreateSession(newUser.ID)
+		fmt.Printf("session: %v,\nraw token %v,\n", newSession, rawToken)
+
+		//	Write JSON response
+		fmt.Fprintf(w, "%v", newUser.Email)
 
 	case http.MethodOptions:
 		w.Header().Set("Allow", "POST, OPTIONS")

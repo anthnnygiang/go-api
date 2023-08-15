@@ -12,4 +12,4 @@ implementations.
 
 ## Notes
 
-* New IDs are generated with `xid.New().String()`.
+* Services generate IDs
