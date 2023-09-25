@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"9z/go-api-template/app"
+	"anthnnygiang/api-template/app"
 	"database/sql"
 	"fmt"
 	"github.com/rs/xid"

@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 )
 
-func CreateToken() (string, error) {
+func CreateSessionToken() (string, error) {
 	//number of bytes used to generate the token
 	n := 32
 	b := make([]byte, n)

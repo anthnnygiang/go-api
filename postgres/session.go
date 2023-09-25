@@ -1,8 +1,8 @@
 package postgres
 
 import (
-	"9z/go-api-template/app"
-	"9z/go-api-template/utils"
+	"anthnnygiang/api-template/app"
+	"anthnnygiang/api-template/utils"
 	"database/sql"
 	"github.com/rs/xid"
 )
@@ -15,8 +15,7 @@ func (s *SessionService) CreateSession(userID string) (*app.Session, string, err
 	id := xid.New().String()
 
 	//Generate token and its hash
-	var rawToken string
-	rawToken, err := utils.CreateToken()
+	rawToken, err := utils.CreateSessionToken()
 	tokenHash := utils.HashToken(rawToken)
 	session := app.Session{
 		ID:        id,

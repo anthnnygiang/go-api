@@ -1,7 +1,7 @@
 package web
 
 import (
-	"9z/go-api-template/app"
+	"anthnnygiang/api-template/app"
 	"fmt"
 	"net/http"
 )
@@ -12,6 +12,7 @@ type Server struct {
 }
 
 func (s *Server) HandleIndex(w http.ResponseWriter, r *http.Request) {
+	//Forward slash matches everything
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return

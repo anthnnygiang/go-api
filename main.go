@@ -1,8 +1,8 @@
 package main
 
 import (
-	"9z/go-api-template/postgres"
-	"9z/go-api-template/web"
+	"anthnnygiang/api-template/postgres"
+	"anthnnygiang/api-template/web"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -11,7 +11,7 @@ import (
 
 func main() {
 	//load environment variables
-	//TODO: use setenv
+	//Move to use os.Setenv
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -32,19 +32,20 @@ func main() {
 		DB: db,
 	}
 
-	/** Initialize server
-	It is not important how services are implemented, as long
-	as they implement all methods. This allows for different
-	service implementations to be easily interchangeable.
+	/* Initialize server
+	Services must implement all methods. This allows for
+	different implementations to be easily interchangeable.
 	*/
 	server := &web.Server{
 		UserService:    userService,
 		SessionService: sessionService,
 	}
 
+	//Move to gorilla/mux
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", server.HandleIndex)
-	mux.HandleFunc("/user", server.HandleUser)
+	mux.HandleFunc("/signup", server.HandleSignUp)
+	mux.HandleFunc("/signin", server.HandleSignIn)
 
 	const PORT = "4000"
 	fmt.Printf("server @ localhost:%s\n", PORT)

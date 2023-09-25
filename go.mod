@@ -1,4 +1,4 @@
-module 9z/go-api-template
+module anthnnygiang/api-template
 
 go 1.21
 

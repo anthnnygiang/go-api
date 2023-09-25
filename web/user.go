@@ -1,26 +1,29 @@
 package web
 
 import (
-	"9z/go-api-template/app"
+	"anthnnygiang/api-template/app"
 	"fmt"
 	"github.com/rs/xid"
 	"net/http"
 )
 
-func (s *Server) HandleUser(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/user" {
+func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/signup" {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Printf("%s %s\n", r.Method, r.URL.Path)
-
-	// Common code for all requests...
+	//Common code for all requests...
 
 	switch r.Method {
 	case http.MethodPost:
-		// Handle the POST request...
-		fmt.Fprintf(w, "handling POST request\n")
+		/* Handle the POST request
+		1. Create a new uuid
+		2. Create the user struct
+		3. Call the service to create the user
+		4. Send activation email
+		*/
 		id := xid.New().String()
+
 		//TODO: Get details from the request
 		userData := app.User{ID: id, Email: "example@example.com", PasswordHash: "password hash"}
 		newUser, err := s.UserService.CreateUser(&userData)
@@ -31,8 +34,28 @@ func (s *Server) HandleUser(w http.ResponseWriter, r *http.Request) {
 		newSession, rawToken, err := s.SessionService.CreateSession(newUser.ID)
 		fmt.Printf("session: %v,\nraw token %v,\n", newSession, rawToken)
 
-		//	Write JSON response
+		//Write JSON response
 		fmt.Fprintf(w, "%v", newUser.Email)
+
+	case http.MethodOptions:
+		w.Header().Set("Allow", "POST, OPTIONS")
+		w.WriteHeader(http.StatusNoContent)
+
+	default:
+		w.Header().Set("Allow", "POST, OPTIONS")
+		http.Error(w, "Error: method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (s *Server) HandleSignIn(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/signin" {
+		http.NotFound(w, r)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodPost:
+		//Handle the POST request...
 
 	case http.MethodOptions:
 		w.Header().Set("Allow", "POST, OPTIONS")
