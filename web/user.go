@@ -30,9 +30,8 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		//Create a session
-		newSession, rawToken, err := s.SessionService.CreateSession(newUser.ID)
-		fmt.Printf("session: %v,\nraw token %v,\n", newSession, rawToken)
+
+		err = s.EmailService.SendActivationEmail(newUser.Email)
 
 		//Write JSON response
 		fmt.Fprintf(w, "%v", newUser.Email)

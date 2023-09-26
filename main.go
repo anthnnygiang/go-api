@@ -2,11 +2,13 @@ package main
 
 import (
 	"anthnnygiang/api-template/postgres"
+	"anthnnygiang/api-template/postmark"
 	"anthnnygiang/api-template/web"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -31,6 +33,9 @@ func main() {
 	sessionService := &postgres.SessionService{
 		DB: db,
 	}
+	emailService := &postmark.EmailService{
+		APIKey: os.Getenv("POSTMARK_SERVER_TOKEN"),
+	}
 
 	/* Initialize server
 	Services must implement all methods. This allows for
@@ -39,6 +44,7 @@ func main() {
 	server := &web.Server{
 		UserService:    userService,
 		SessionService: sessionService,
+		EmailService:   emailService,
 	}
 
 	//Move to gorilla/mux
