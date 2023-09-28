@@ -24,14 +24,14 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		*/
 		id := xid.New().String()
 
-		//TODO: Get details from the request
+		// Get details from the request
 		userData := app.User{ID: id, Email: "example@example.com", PasswordHash: "password hash"}
 		newUser, err := s.UserService.CreateUser(&userData)
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
 
-		err = s.EmailService.SendActivationEmail(newUser.Email)
+		_, err = s.EmailService.SendActivationEmail(newUser.Email)
 
 		//Write JSON response
 		fmt.Fprintf(w, "%v", newUser.Email)

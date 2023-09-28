@@ -1,5 +1,7 @@
 package app
 
+import "anthnnygiang/api-template/postmark"
+
 type Email struct {
 	From     string
 	To       string
@@ -8,5 +10,5 @@ type Email struct {
 }
 
 type EmailService interface {
-	SendActivationEmail(email string) error
+	SendActivationEmail(email string) (*postmark.Response, error)
 }

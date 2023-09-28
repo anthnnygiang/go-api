@@ -26,6 +26,8 @@ func main() {
 	}
 	defer db.Close()
 
+	HTTPClient := &http.Client{}
+
 	//Initialize services
 	userService := &postgres.UserService{
 		DB: db,
@@ -34,7 +36,8 @@ func main() {
 		DB: db,
 	}
 	emailService := &postmark.EmailService{
-		APIKey: os.Getenv("POSTMARK_SERVER_TOKEN"),
+		HTTPClient: HTTPClient,
+		APIKey:     os.Getenv("POSTMARK_SERVER_TOKEN"),
 	}
 
 	/* Initialize server
