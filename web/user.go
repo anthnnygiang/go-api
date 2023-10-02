@@ -21,17 +21,22 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		2. Create the user struct
 		3. Call the service to create the user
 		4. Send activation email
+		5. On success, return success response. Or on error, return error response
 		*/
-		id := xid.New().String()
 
-		// Get details from the request
-		userData := app.User{ID: id, Email: "example@example.com", PasswordHash: "password hash"}
+		//Construct, and create the user
+		id := xid.New().String()
+		userData := app.User{ID: id, Email: "example@example.com", PasswordHash: "hash(password + salt)"}
 		newUser, err := s.UserService.CreateUser(&userData)
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-
-		_, err = s.EmailService.SendActivationEmail(newUser.Email)
+		//Construct, and send the activation email
+		email := app.ActivationEmail{To: newUser.Email}
+		_, err = s.EmailService.SendActivationEmail(email)
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
 
 		//Write JSON response
 		fmt.Fprintf(w, "%v", newUser.Email)

@@ -1,14 +1,11 @@
 package app
 
-import "anthnnygiang/api-template/postmark"
-
-type Email struct {
-	From     string
-	To       string
-	Subject  string
-	HtmlBody string
+type ActivationEmail struct {
+	To string
+	//other fields
+	OtherFields string
 }
 
 type EmailService interface {
-	SendActivationEmail(email string) (*postmark.Response, error)
+	SendActivationEmail(email ActivationEmail) (*ActivationEmail, error)
 }

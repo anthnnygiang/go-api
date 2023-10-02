@@ -26,6 +26,7 @@ func main() {
 	}
 	defer db.Close()
 
+	// Create an HTTP client per service where needed
 	HTTPClient := &http.Client{}
 
 	//Initialize services
@@ -50,7 +51,7 @@ func main() {
 		EmailService:   emailService,
 	}
 
-	//Move to gorilla/mux
+	//Move to chi
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", server.HandleIndex)
 	mux.HandleFunc("/signup", server.HandleSignUp)

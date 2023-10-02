@@ -7,7 +7,7 @@ type Session struct {
 }
 
 type SessionService interface {
-	CreateSession(userID string) (*Session, string, error)
+	CreateSession(userID string) (session *Session, rawToken string, err error)
 	//VerifySession(rawToken string) (*User, error)
 	//DeleteSession(rawToken string) (*Session, error)
 }
