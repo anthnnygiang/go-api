@@ -1,9 +1,16 @@
 package app
 
+import (
+	"github.com/google/uuid"
+	"time"
+)
+
 type User struct {
-	ID           string
+	ID           uuid.UUID
+	CreatedAt    time.Time
 	Email        string
-	PasswordHash string
+	PasswordHash []byte
+	Activated    bool
 }
 
 type UserService interface {

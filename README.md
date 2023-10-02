@@ -5,11 +5,11 @@ the `app`
 package. This ensures there are no circular dependencies, flat hierarchical structure, and easily interchangeable
 implementations.
 
-## Packages
+## Notable packages
 
 * pgx
-* xid
 
 ## Notes
 
 * Services generate IDs
+* Use Google UUID v4 for now. Switch to UUID v7 when it's released

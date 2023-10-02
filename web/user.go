@@ -3,8 +3,10 @@ package web
 import (
 	"anthnnygiang/api-template/app"
 	"fmt"
-	"github.com/rs/xid"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"time"
 )
 
 func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
@@ -25,8 +27,19 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		*/
 
 		//Construct, and create the user
-		id := xid.New().String()
-		userData := app.User{ID: id, Email: "example@example.com", PasswordHash: "hash(password + salt)"}
+		id := uuid.New()
+		//Retrieve values from request
+		passwordHash, err := bcrypt.GenerateFromPassword([]byte("a password"), 12)
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
+		userData := app.User{
+			ID:           id,
+			CreatedAt:    time.Now(), //Create time here or in db?
+			Email:        "example@example.com",
+			PasswordHash: passwordHash,
+			Activated:    false,
+		}
 		newUser, err := s.UserService.CreateUser(&userData)
 		if err != nil {
 			fmt.Printf("%v", err)
@@ -60,6 +73,7 @@ func (s *Server) HandleSignIn(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		//Handle the POST request...
+		//Create a new session
 
 	case http.MethodOptions:
 		w.Header().Set("Allow", "POST, OPTIONS")
