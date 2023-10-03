@@ -7,9 +7,8 @@ import (
 )
 
 type Server struct {
-	UserService    app.UserService
-	SessionService app.SessionService
-	EmailService   app.EmailService
+	UserService  app.UserService
+	EmailService app.EmailService
 }
 
 func (s *Server) HandleIndex(w http.ResponseWriter, r *http.Request) {

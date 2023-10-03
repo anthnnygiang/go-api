@@ -13,15 +13,20 @@ type UserService struct {
 func (s *UserService) CreateUser(user *app.User) (*app.User, error) {
 
 	//Insert into users table
-	//Add an "activated "column
 	var u app.User
 	row := s.DB.QueryRow(`
-	  INSERT INTO users (id, email, password_hash)
-	  VALUES ($1, $2, $3) RETURNING id, email, password_hash`, user.ID, user.Email, user.PasswordHash)
-	err := row.Scan(&u.ID, &u.Email, &u.PasswordHash)
+	  INSERT INTO users (id, created_at, email, password_hash, activated)
+	  VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at, email, password_hash, activated`,
+		user.ID, user.CreatedAt, user.Email, user.PasswordHash, user.Activated)
+
+	err := row.Scan(&u.ID, &u.CreatedAt, &u.Email, &u.PasswordHash, &u.Activated)
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
 	return &u, nil
+}
+
+func (s *UserService) ActivateUser(user *app.User) (*app.User, error) {
+	return nil, nil
 }

@@ -33,9 +33,6 @@ func main() {
 	userService := &postgres.UserService{
 		DB: db,
 	}
-	sessionService := &postgres.SessionService{
-		DB: db,
-	}
 	emailService := &postmark.EmailService{
 		HTTPClient: HTTPClient,
 		APIKey:     os.Getenv("POSTMARK_SERVER_TOKEN"),
@@ -46,9 +43,8 @@ func main() {
 	different implementations to be easily interchangeable.
 	*/
 	server := &web.Server{
-		UserService:    userService,
-		SessionService: sessionService,
-		EmailService:   emailService,
+		UserService:  userService,
+		EmailService: emailService,
 	}
 
 	//Move to chi

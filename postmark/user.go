@@ -15,7 +15,7 @@ type EmailService struct {
 
 func (e EmailService) SendActivationEmail(email app.ActivationEmail) (*app.ActivationEmail, error) {
 
-	//Use values from email argument
+	//Use values from email argument when ready
 	body := []byte(fmt.Sprintf(`{
 		"From": "hello@anthonygiang.xyz",
 		"To": "hello@anthonygiang.xyz",
@@ -24,6 +24,7 @@ func (e EmailService) SendActivationEmail(email app.ActivationEmail) (*app.Activ
 		"MessageStream": "outbound",
 	}`, email.To))
 
+	//Be aware of token referer leakage
 	r, err := http.NewRequest("POST", "https://api.postmarkapp.com/email", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err

@@ -15,8 +15,9 @@ type User struct {
 
 type UserService interface {
 	CreateUser(user *User) (*User, error)
+	//ActivateUser(user *User) (*User, error)
+	//ResetUserPassword(user *User) (*User, error)
 	//UpdateUser(user *User) (*User, error)
 	//DeleteUser(user *User) (*User, error)
 	//AuthenticateUser(user *User) (*User, error)
-	//UpdateUserPassword(user *User, newPassword string) (*User, error)
 }
