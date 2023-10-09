@@ -24,7 +24,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error DB")
 	}
-	defer db.Close()
 
 	// Create an HTTP client per service where needed
 	HTTPClient := &http.Client{}
@@ -47,10 +46,11 @@ func main() {
 		EmailService: emailService,
 	}
 
-	//Move to chi
+	//move to chi
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", server.HandleIndex)
 	mux.HandleFunc("/signup", server.HandleSignUp)
+	mux.HandleFunc("/activate", server.HandleActivateUser)
 	mux.HandleFunc("/signin", server.HandleSignIn)
 
 	const PORT = "4000"

@@ -4,6 +4,7 @@ type ActivationEmail struct {
 	To string
 	//other fields
 	ActivationURL string
+	Token
 }
 
 type EmailService interface {

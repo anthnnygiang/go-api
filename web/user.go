@@ -2,6 +2,7 @@ package web
 
 import (
 	"anthnnygiang/api-template/app"
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -14,29 +15,29 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	//Common code for all requests...
-
 	switch r.Method {
 	case http.MethodPost:
-		/* Handle the POST request
-		1. Create a new uuid
-		2. Create the user struct
-		3. Call the service to create the user
-		4. Send activation email
-		5. On success, return success response. Or on error, return error response
-		*/
+		//retrieve the request body
+		payload := struct {
+			Email    string `json:"email"`
+			Password string `json:"password"`
+		}{}
+		err := json.NewDecoder(r.Body).Decode(&payload)
+		if err != nil {
+			http.Error(w, "error: decode", http.StatusBadRequest)
+		}
+		defer r.Body.Close()
 
-		//Construct, and create the user
+		//create the user
 		id := uuid.New()
-		//Retrieve values from request body
-		passwordHash, err := bcrypt.GenerateFromPassword([]byte("a password"), 12)
+		passwordHash, err := bcrypt.GenerateFromPassword([]byte(payload.Password), 12)
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
 		userData := app.User{
 			ID:           id,
-			CreatedAt:    time.Now(), //Create time here or in db?
-			Email:        "example@example.com",
+			CreatedAt:    time.Now(),
+			Email:        payload.Email,
 			PasswordHash: passwordHash,
 			Activated:    false,
 		}
@@ -44,8 +45,13 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		//Construct, and send the activation email
-		email := app.ActivationEmail{To: newUser.Email}
+		token := app.Token{
+			TokenHash: [32]byte{},
+			Scope:     app.ScopeActivate,
+			Expiry:    time.Time{},
+		}
+		//send the activation email
+		email := app.ActivationEmail{To: newUser.Email, Token: token}
 		_, err = s.EmailService.SendActivationEmail(email)
 		if err != nil {
 			fmt.Printf("%v", err)
@@ -61,6 +67,27 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.Header().Set("Allow", "POST, OPTIONS")
 		http.Error(w, "Error: method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (s *Server) HandleActivateUser(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/activate" {
+		http.NotFound(w, r)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodPut:
+		//Handle the PUT request...
+
+	case http.MethodOptions:
+		w.Header().Set("Allow", "PUT, OPTIONS")
+		w.WriteHeader(http.StatusNoContent)
+
+	default:
+		w.Header().Set("Allow", "PUT, OPTIONS")
+		http.Error(w, "Error: method not allowed", http.StatusMethodNotAllowed)
+
 	}
 }
 

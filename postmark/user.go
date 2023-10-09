@@ -16,7 +16,7 @@ type EmailService struct {
 func (es EmailService) SendActivationEmail(email app.ActivationEmail) (*app.ActivationEmail, error) {
 
 	//Use values from email argument when ready
-	body := []byte(fmt.Sprintf(`{
+	payload := []byte(fmt.Sprintf(`{
 		"From": "hello@anthonygiang.xyz",
 		"To": "hello@anthonygiang.xyz",
 		"Subject": "Hello from Postmark",
@@ -25,26 +25,26 @@ func (es EmailService) SendActivationEmail(email app.ActivationEmail) (*app.Acti
 	}`, email.To))
 
 	//Be aware of token referer leakage
-	r, err := http.NewRequest("POST", "https://api.postmarkapp.com/email", bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", "https://api.postmarkapp.com/email", bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, err
 	}
-	r.Header.Add("Accept", "application/json")
-	r.Header.Add("Content-Type", "application/json")
-	r.Header.Add("X-Postmark-Server-Token", es.APIKey)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-Postmark-Server-Token", es.APIKey)
 
-	res, err := es.HTTPClient.Do(r)
+	res, err := es.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	resBody := &Response{}
-	err = json.NewDecoder(res.Body).Decode(resBody)
+	var msg Response
+	err = json.NewDecoder(res.Body).Decode(&msg)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
 
-	fmt.Printf("%+v", resBody)
+	fmt.Printf("%+v", msg)
 
 	return &email, nil
 }

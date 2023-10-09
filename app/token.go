@@ -11,16 +11,18 @@ import (
 type Token struct {
 	TokenHash [32]byte
 	userID    uuid.UUID
-	Scope     string
+	Scope     Scope
 	Expiry    time.Time
 }
 
+type Scope string
+
 const (
-	scopeActivate     = "activate"
-	scopeAuthenticate = "authenticate"
+	ScopeActivate     Scope = "activate"
+	ScopeAuthenticate Scope = "authenticate"
 )
 
-func GenerateToken(user *User, ttl time.Duration, scope string) (*Token, *string, error) {
+func GenerateToken(user *User, ttl time.Duration, scope Scope) (*Token, *string, error) {
 	token := Token{
 		userID: user.ID,
 		Expiry: time.Now().Add(ttl),
