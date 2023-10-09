@@ -10,11 +10,11 @@ type UserService struct {
 	DB *sql.DB
 }
 
-func (s *UserService) CreateUser(user *app.User) (*app.User, error) {
+func (us *UserService) CreateUser(user *app.User) (*app.User, error) {
 
 	//Insert into users table
 	var u app.User
-	row := s.DB.QueryRow(`
+	row := us.DB.QueryRow(`
 	  INSERT INTO users (id, created_at, email, password_hash, activated)
 	  VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at, email, password_hash, activated`,
 		user.ID, user.CreatedAt, user.Email, user.PasswordHash, user.Activated)
@@ -27,6 +27,6 @@ func (s *UserService) CreateUser(user *app.User) (*app.User, error) {
 	return &u, nil
 }
 
-func (s *UserService) ActivateUser(user *app.User) (*app.User, error) {
+func (us *UserService) ActivateUser(user *app.User) (*app.User, error) {
 	return nil, nil
 }

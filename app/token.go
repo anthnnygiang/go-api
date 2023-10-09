@@ -11,9 +11,14 @@ import (
 type Token struct {
 	TokenHash [32]byte
 	userID    uuid.UUID
-	Expiry    time.Time
 	Scope     string
+	Expiry    time.Time
 }
+
+const (
+	scopeActivate     = "activate"
+	scopeAuthenticate = "authenticate"
+)
 
 func GenerateToken(user *User, ttl time.Duration, scope string) (*Token, *string, error) {
 	token := Token{

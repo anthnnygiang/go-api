@@ -28,7 +28,7 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 
 		//Construct, and create the user
 		id := uuid.New()
-		//Retrieve values from request
+		//Retrieve values from request body
 		passwordHash, err := bcrypt.GenerateFromPassword([]byte("a password"), 12)
 		if err != nil {
 			fmt.Printf("%v", err)

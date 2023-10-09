@@ -13,7 +13,7 @@ type EmailService struct {
 	APIKey     string
 }
 
-func (e EmailService) SendActivationEmail(email app.ActivationEmail) (*app.ActivationEmail, error) {
+func (es EmailService) SendActivationEmail(email app.ActivationEmail) (*app.ActivationEmail, error) {
 
 	//Use values from email argument when ready
 	body := []byte(fmt.Sprintf(`{
@@ -31,9 +31,9 @@ func (e EmailService) SendActivationEmail(email app.ActivationEmail) (*app.Activ
 	}
 	r.Header.Add("Accept", "application/json")
 	r.Header.Add("Content-Type", "application/json")
-	r.Header.Add("X-Postmark-Server-Token", e.APIKey)
+	r.Header.Add("X-Postmark-Server-Token", es.APIKey)
 
-	res, err := e.HTTPClient.Do(r)
+	res, err := es.HTTPClient.Do(r)
 	if err != nil {
 		return nil, err
 	}

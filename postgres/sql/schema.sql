@@ -1,4 +1,4 @@
-create table users
+create table if not exists users
 (
     id            uuid primary key,
     created_at    timestamptz not null,
@@ -7,9 +7,10 @@ create table users
     activated     boolean     not null default false
 );
 
-create table sessions
+create table if not exists tokens
 (
-    id         uuid primary key,
-    user_id    text         not null references users (id) on delete cascade,
-    token_hash bytea unique not null
+    token_hash bytea primary key,
+    user_id    uuid        not null references users (id) on delete cascade,
+    scope      text        not null, -- TODO: enum
+    expiry     timestamptz not null
 );
