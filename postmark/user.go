@@ -45,7 +45,7 @@ func (es EmailService) SendActivationEmail(email app.ActivationEmail) (*app.Acti
 	}
 	defer res.Body.Close()
 
-	fmt.Printf("%+v", msg)
+	fmt.Printf("%+v\n", msg)
 
 	return &email, nil
 }

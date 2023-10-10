@@ -9,10 +9,10 @@ import (
 )
 
 type Token struct {
-	TokenHash [32]byte
-	userID    uuid.UUID
-	Scope     Scope
-	Expiry    time.Time
+	Hash   []byte
+	UserID uuid.UUID
+	Scope  Scope
+	Expiry time.Time
 }
 
 type Scope string
@@ -28,7 +28,7 @@ type TokenService interface {
 
 func GenerateToken(user *User, ttl time.Duration, scope Scope) (*Token, *string, error) {
 	token := Token{
-		userID: user.ID,
+		UserID: user.ID,
 		Expiry: time.Now().Add(ttl),
 		Scope:  scope,
 	}
@@ -42,7 +42,8 @@ func GenerateToken(user *User, ttl time.Duration, scope Scope) (*Token, *string,
 
 	//Set the plaintext and its hash
 	rawToken := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(randomBytes)
-	token.TokenHash = sha256.Sum256([]byte(rawToken))
+	hash := sha256.Sum256([]byte(rawToken))
+	token.Hash = hash[:]
 
 	return &token, &rawToken, nil
 }

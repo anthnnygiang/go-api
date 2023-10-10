@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -25,6 +26,7 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&payload)
 		if err != nil {
 			http.Error(w, "error: decode", http.StatusBadRequest)
+			log.Fatal(err)
 		}
 		defer r.Body.Close()
 
@@ -32,7 +34,8 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		id := uuid.New()
 		passwordHash, err := bcrypt.GenerateFromPassword([]byte(payload.Password), 12)
 		if err != nil {
-			fmt.Printf("%v", err)
+			http.Error(w, "error: bcrypt", http.StatusInternalServerError)
+			log.Fatal(err)
 		}
 		userData := app.User{
 			ID:           id,
@@ -43,22 +46,27 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		}
 		newUser, err := s.UserService.AddUser(&userData)
 		if err != nil {
-			fmt.Printf("%v", err)
+			http.Error(w, "error: add user", http.StatusInternalServerError)
+			log.Fatal(err)
+
 		}
 		//insert the token into the database
 		token, rawToken, err := app.GenerateToken(newUser, 24*time.Hour, app.ScopeActivate)
 		if err != nil {
-			fmt.Printf("%v", err)
+			http.Error(w, "error: generate token", http.StatusInternalServerError)
+			log.Fatal(err)
 		}
 		_, err = s.TokenService.AddToken(token)
 		if err != nil {
-			fmt.Printf("%v", err)
+			http.Error(w, "error: add token", http.StatusInternalServerError)
+			log.Fatal(err)
 		}
 		//send the activation email
 		email := app.ActivationEmail{To: newUser.Email, RawToken: *rawToken}
 		_, err = s.EmailService.SendActivationEmail(email)
 		if err != nil {
-			fmt.Printf("%v", err)
+			http.Error(w, "error: send email", http.StatusInternalServerError)
+			log.Fatal(err)
 		}
 
 		//Write JSON response
