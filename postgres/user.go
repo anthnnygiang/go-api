@@ -10,7 +10,7 @@ type UserService struct {
 	DB *sql.DB
 }
 
-func (us *UserService) CreateUser(user *app.User) (*app.User, error) {
+func (us UserService) AddUser(user *app.User) (*app.User, error) {
 
 	//Insert into users table
 	var u app.User
@@ -27,6 +27,6 @@ func (us *UserService) CreateUser(user *app.User) (*app.User, error) {
 	return &u, nil
 }
 
-func (us *UserService) ActivateUser(user *app.User) (*app.User, error) {
+func (us UserService) ActivateUser(user *app.User) (*app.User, error) {
 	return nil, nil
 }

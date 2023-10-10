@@ -22,6 +22,10 @@ const (
 	ScopeAuthenticate Scope = "authenticate"
 )
 
+type TokenService interface {
+	AddToken(token *Token) (*Token, error)
+}
+
 func GenerateToken(user *User, ttl time.Duration, scope Scope) (*Token, *string, error) {
 	token := Token{
 		userID: user.ID,

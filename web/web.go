@@ -8,6 +8,7 @@ import (
 
 type Server struct {
 	UserService  app.UserService
+	TokenService app.TokenService
 	EmailService app.EmailService
 }
 

@@ -20,7 +20,7 @@ func main() {
 	}
 
 	//Open a connection to the database
-	db, err := postgres.Open()
+	postgresDB, err := postgres.Open()
 	if err != nil {
 		log.Fatal("Error DB")
 	}
@@ -30,8 +30,17 @@ func main() {
 
 	//Initialize services
 	userService := &postgres.UserService{
-		DB: db,
+		DB: postgresDB,
 	}
+	tokenService := &postgres.TokenService{
+		DB: postgresDB,
+	}
+	/*caching example...
+	tokenCacheService := &redis.TokenCacheService{
+		TokenService: tokenService,
+		Cache:        redisCache,
+	}
+	*/
 	emailService := &postmark.EmailService{
 		HTTPClient: HTTPClient,
 		APIKey:     os.Getenv("POSTMARK_SERVER_TOKEN"),
@@ -43,6 +52,7 @@ func main() {
 	*/
 	server := &web.Server{
 		UserService:  userService,
+		TokenService: tokenService,
 		EmailService: emailService,
 	}
 

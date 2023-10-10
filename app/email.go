@@ -3,8 +3,7 @@ package app
 type ActivationEmail struct {
 	To string
 	//other fields
-	ActivationURL string
-	Token
+	RawToken string
 }
 
 type EmailService interface {

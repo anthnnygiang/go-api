@@ -41,17 +41,21 @@ func (s *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 			PasswordHash: passwordHash,
 			Activated:    false,
 		}
-		newUser, err := s.UserService.CreateUser(&userData)
+		newUser, err := s.UserService.AddUser(&userData)
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		token := app.Token{
-			TokenHash: [32]byte{},
-			Scope:     app.ScopeActivate,
-			Expiry:    time.Time{},
+		//insert the token into the database
+		token, rawToken, err := app.GenerateToken(newUser, 24*time.Hour, app.ScopeActivate)
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
+		_, err = s.TokenService.AddToken(token)
+		if err != nil {
+			fmt.Printf("%v", err)
 		}
 		//send the activation email
-		email := app.ActivationEmail{To: newUser.Email, Token: token}
+		email := app.ActivationEmail{To: newUser.Email, RawToken: *rawToken}
 		_, err = s.EmailService.SendActivationEmail(email)
 		if err != nil {
 			fmt.Printf("%v", err)

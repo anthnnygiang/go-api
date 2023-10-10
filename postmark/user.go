@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type EmailService struct {
@@ -19,10 +20,10 @@ func (es EmailService) SendActivationEmail(email app.ActivationEmail) (*app.Acti
 	payload := []byte(fmt.Sprintf(`{
 		"From": "hello@anthonygiang.xyz",
 		"To": "hello@anthonygiang.xyz",
-		"Subject": "Hello from Postmark",
-		"HtmlBody": "Hi, your email is: %s",
+		"Subject": "Activate your account",
+		"HtmlBody": "true destination: %s, raw token: %s, copy paste into form.",
 		"MessageStream": "outbound",
-	}`, email.To))
+	}`, email.To, strings.ToUpper(email.RawToken)))
 
 	//Be aware of token referer leakage
 	req, err := http.NewRequest("POST", "https://api.postmarkapp.com/email", bytes.NewBuffer(payload))
